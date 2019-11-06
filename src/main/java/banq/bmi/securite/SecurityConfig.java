@@ -35,9 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		 http.csrf().disable();
 		 http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		 // http.formLogin();
-		 http.authorizeRequests().antMatchers("/login/**","/uitisateurs/**","/listUser/**","/register/**","/listUser/update/{id}","/listUser/{id}").permitAll();
-		 http.authorizeRequests().antMatchers(HttpMethod.POST,"/dossier/**","/listUser/**","/register/**").hasAuthority("ADMIN");
-		 //http.authorizeRequests().antMatchers(HttpMethod.GET,"/listUser/**").hasAuthority("ADMIN");
+		 http.authorizeRequests().antMatchers("/login/**","/uitisateurs/**","listDossier/**","/listUser/**","/register/**","/listUser/update/{id}","/listUser/{id}").permitAll();
+		 http.authorizeRequests().antMatchers(HttpMethod.POST,"/dossier/**","listDossier/**","/uitisateurs/**","/listUser/**","/register/**").hasAuthority("ADMIN");
+		 http.authorizeRequests().antMatchers(HttpMethod.GET,"/listUser/**","listDossier/**").hasAuthority("ADMIN");
 		 http.authorizeRequests().anyRequest().authenticated();
 		 http.addFilter(new JWTAuthenticationFilter(authenticationManager()));
 		 http.addFilterBefore(new JWTAuthorizationFilter(),UsernamePasswordAuthenticationFilter.class);

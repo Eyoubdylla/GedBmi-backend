@@ -1,9 +1,10 @@
 package banq.bmi.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import banq.bmi.entities.Dossier;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-public interface DossierRepository  extends JpaRepository<Dossier,Long>{
-	
+@RepositoryRestResource
+public interface DossierRepository  extends JpaRepository<Dossier, Long>{
+    public Dossier findAllByNom(String nom);
 }

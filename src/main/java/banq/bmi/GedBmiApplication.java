@@ -1,19 +1,15 @@
 package banq.bmi;
-import java.util.Date;
-
+import java.util.Date ;
+import banq.bmi.entities.Dossier ;
+import banq.bmi.Repository.DossierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import banq.bmi.Repository.DossierRepository;
-import banq.bmi.entities.Dossier;
-import banq.bmi.entities.Role;
-import banq.bmi.entities.Uitisateur;
 import banq.bmi.services.AccountServive;
 
 @SpringBootApplication
@@ -56,6 +52,7 @@ public class GedBmiApplication implements CommandLineRunner{
 //		dossierRepository.save(new Dossier(null,"versement",new Date(),"destop"));
 //		dossierRepository.save(new Dossier(null,"retraits",new Date(),"destop"));
 //		dossierRepository.save(new Dossier(null,"abonnemant",new Date(),"destop"));
+        dossierRepository.save(new Dossier(null,"text",new Date(),"destop/vers/pupel/scan"));
 //
 //
 //

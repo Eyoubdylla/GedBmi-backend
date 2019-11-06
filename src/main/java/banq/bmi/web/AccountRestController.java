@@ -27,6 +27,7 @@ public class AccountRestController {
 
 
 	@PostMapping("/register")
+
 	public Uitisateur register(@RequestBody RegisterForm utilisateurForm) {
 		if(utilisateurForm.equals(utilisateurForm.getRepassword())) 
 			throw new RuntimeException("you must confirm your password");

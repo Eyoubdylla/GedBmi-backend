@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.validation.Valid;
 import java.util.List;
 
-@RestController 
+@RestController
 public class AccountRestController {
 	@Autowired
 	private AccountServive accountService ;

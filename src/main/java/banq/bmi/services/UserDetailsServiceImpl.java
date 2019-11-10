@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import banq.bmi.entities.Uitisateur;
+import banq.bmi.entities.Utilisateur;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Uitisateur utilisateur=accountServive.findUtilisateurByUsername(username);
+		Utilisateur utilisateur=accountServive.findUtilisateurByUsername(username);
 		if(utilisateur==null)throw new UsernameNotFoundException(username);
 		Collection<GrantedAuthority> authorities=new ArrayList<>();
 		utilisateur.getRoles().forEach(r->{

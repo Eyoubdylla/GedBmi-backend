@@ -3,6 +3,7 @@ import java.util.Date ;
 import banq.bmi.entities.Dossier ;
 import banq.bmi.Repository.DossierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -52,7 +53,7 @@ public class GedBmiApplication implements CommandLineRunner{
 //		dossierRepository.save(new Dossier(null,"versement",new Date(),"destop"));
 //		dossierRepository.save(new Dossier(null,"retraits",new Date(),"destop"));
 //		dossierRepository.save(new Dossier(null,"abonnemant",new Date(),"destop"));
-        dossierRepository.save(new Dossier(null,"text",new Date(),"destop/vers/pupel/scan"));
+       // dossierRepository.save(new Dossier(null,"text",new Date(),"destop/vers/pupel/scan"));
 //
 //
 //

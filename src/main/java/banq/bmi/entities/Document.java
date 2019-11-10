@@ -21,4 +21,39 @@ public class Document {
 	private String Drescription ;
 	private Date dateStockage;
 
+	public Long getId() {
+		return id;
+	}
+
+	public String getTitre() {
+		return titre;
+	}
+
+	public void setTitre(String titre) {
+		this.titre = titre;
+	}
+
+	public Date getDateCreation() {
+		return dateCreation;
+	}
+
+	public void setDateCreation(Date dateCreation) {
+		this.dateCreation = dateCreation;
+	}
+
+	public String getDrescription() {
+		return Drescription;
+	}
+
+	public void setDrescription(String drescription) {
+		Drescription = drescription;
+	}
+
+	public Date getDateStockage() {
+		return dateStockage;
+	}
+
+	public void setDateStockage(Date dateStockage) {
+		this.dateStockage = dateStockage;
+	}
 }

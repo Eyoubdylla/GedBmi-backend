@@ -6,34 +6,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import banq.bmi.entities.Uitisateur;
+import banq.bmi.entities.Utilisateur;
 import banq.bmi.services.AccountServive;
 
-import javax.persistence.Id;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
-@RestController 
+@RestController
+@CrossOrigin
 public class AccountRestController {
 	@Autowired
 	private AccountServive accountService ;
 	@Autowired
 	private UtilisateurRepository utilisateurRepository ;
 
+	@RequestMapping("/login")
+	public Utilisateur user(Principal principal) {
+		//logger.info("user logged "+principal);
+		Utilisateur user = utilisateurRepository.findByUsername(principal.getName());
+		//user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+		return user;
+	}
+
 	@GetMapping("/listUser")
-	public List<Uitisateur> ListDossier(){
+	public List<Utilisateur> ListDossier(){
 		return utilisateurRepository.findAll();
 	}
 
 
 	@PostMapping("/register")
 
-	public Uitisateur register(@RequestBody RegisterForm utilisateurForm) {
+	public Utilisateur register(@RequestBody RegisterForm utilisateurForm) {
 		if(utilisateurForm.equals(utilisateurForm.getRepassword())) 
 			throw new RuntimeException("you must confirm your password");
-		Uitisateur usr=accountService.findUtilisateurByUsername(utilisateurForm.getUsername());
+		Utilisateur usr=accountService.findUtilisateurByUsername(utilisateurForm.getUsername());
 		if(usr!=null)throw new RuntimeException("this user already exists");
-		Uitisateur utilsateur=new Uitisateur();
+		Utilisateur utilsateur=new Utilisateur();
 		utilsateur.setUsername(utilisateurForm.getUsername());
 		utilsateur.setPassword(utilisateurForm.getPassword());
 		accountService.saveUtilisateur(utilsateur);
@@ -42,12 +51,12 @@ public class AccountRestController {
 	}
 
 @PutMapping("/listUser/update/{id}")
-    public Uitisateur updateUser(@PathVariable(value = "Id") long Id ,@Valid @RequestBody Uitisateur userdetail){
-        Uitisateur user = utilisateurRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Uitisateur","Id", Id));
+    public Utilisateur updateUser(@PathVariable(value = "Id") long Id , @Valid @RequestBody Utilisateur userdetail){
+        Utilisateur user = utilisateurRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Uitisateur","Id", Id));
         user.setUsername(userdetail.getUsername());
         user.setPassword(userdetail.getPassword());
         user.setRoles(userdetail.getRoles());
-        Uitisateur updateUser = utilisateurRepository.save(user);
+        Utilisateur updateUser = utilisateurRepository.save(user);
         System.out.println("********************");
         System.out.println(user.getUsername());
         System.out.println(user.getPassword());
@@ -57,7 +66,7 @@ public class AccountRestController {
     @DeleteMapping ("/listUser/{id}")
     //@RequestMapping(value ="/listUser/{id}",method = RequestMethod.DELETE.GET)
     public ResponseEntity<?> delete(@PathVariable(value = "id") long Id){
-        Uitisateur user = utilisateurRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Uitisateur","Id", Id));
+        Utilisateur user = utilisateurRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Uitisateur","Id", Id));
         utilisateurRepository.delete(user);
         return ResponseEntity.ok().build();
     }

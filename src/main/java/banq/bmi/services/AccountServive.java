@@ -1,13 +1,13 @@
 package banq.bmi.services;
 
 import banq.bmi.entities.Role;
-import banq.bmi.entities.Uitisateur;
+import banq.bmi.entities.Utilisateur;
 
 public interface AccountServive {
-	public Uitisateur saveUtilisateur(Uitisateur utilisateur);
+	public Utilisateur saveUtilisateur(Utilisateur utilisateur);
 	public Role saveRole(Role roles);
 	public void AjoutRoleAUtilisateur(String username, String roleName);
-	public Uitisateur findUtilisateurByUsername(String username);
+	public Utilisateur findUtilisateurByUsername(String username);
 //	public Uitisateur updateUtilisateur();
 //	public void DeleteUtilisateur();
 }

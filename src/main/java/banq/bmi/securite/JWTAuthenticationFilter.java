@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import banq.bmi.entities.Uitisateur;
+import banq.bmi.entities.Utilisateur;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -31,9 +31,9 @@ public class JWTAuthenticationFilter  extends UsernamePasswordAuthenticationFilt
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException{
 		// recupeler le username et le password
-		Uitisateur utilisateur = null;
+		Utilisateur utilisateur = null;
 		try {
-		utilisateur=new ObjectMapper().readValue(request.getInputStream(), Uitisateur.class);
+		utilisateur=new ObjectMapper().readValue(request.getInputStream(), Utilisateur.class);
 		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}

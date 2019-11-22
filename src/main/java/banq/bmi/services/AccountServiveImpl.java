@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import banq.bmi.Repository.RoleRepository;
 import banq.bmi.Repository.UtilisateurRepository;
 import banq.bmi.entities.Role;
-import banq.bmi.entities.Uitisateur;
+import banq.bmi.entities.Utilisateur;
 @Service
 @Transactional
 
@@ -22,7 +22,7 @@ public class AccountServiveImpl implements AccountServive{
 	@Autowired
 	private RoleRepository roleRepository ;
 	@Override
-	public Uitisateur saveUtilisateur(Uitisateur utilisateur) {
+	public Utilisateur saveUtilisateur(Utilisateur utilisateur) {
 		// encrypter le mot de passe 
 		String hashPW=bCryptPasswordEncoder.encode(utilisateur.getPassword());
 		utilisateur.setPassword(hashPW);
@@ -40,14 +40,14 @@ public class AccountServiveImpl implements AccountServive{
 	public void AjoutRoleAUtilisateur(String username, String roleName) {
 		// TODO Auto-generated method stub
 		Role role=roleRepository.findByRoleName(roleName);
-		Uitisateur utilisateur=utilisateurRepository.findByUsername(username);
+		Utilisateur utilisateur=utilisateurRepository.findByUsername(username);
 		utilisateur.getRoles().add(role);
 		
 		
 	}
 
 	@Override
-	public Uitisateur findUtilisateurByUsername(String username) {
+	public Utilisateur findUtilisateurByUsername(String username) {
 		// TODO Auto-generated method stub
 		return utilisateurRepository.findByUsername(username);
 	}

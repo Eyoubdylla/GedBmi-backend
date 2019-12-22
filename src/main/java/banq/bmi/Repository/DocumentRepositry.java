@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @CrossOrigin("*")
 @RepositoryRestResource
-public interface DocumentRepositry extends JpaRepository<Document, Long> {
+public interface DocumentRepositry extends JpaRepository<Document, String> {
+//    public Document findByUsername(String username);
 
 }

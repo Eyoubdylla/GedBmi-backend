@@ -9,9 +9,12 @@ import banq.bmi.Repository.RoleRepository;
 import banq.bmi.Repository.UtilisateurRepository;
 import banq.bmi.entities.Role;
 import banq.bmi.entities.Utilisateur;
+
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Transactional
-
 // cette classe est une maniere de centraliser la gestion de l'utilisateur 
 public class AccountServiveImpl implements AccountServive{
 	@Autowired 
@@ -19,37 +22,80 @@ public class AccountServiveImpl implements AccountServive{
 	
 	@Autowired
 	private UtilisateurRepository utilisateurRepository ;
+
 	@Autowired
 	private RoleRepository roleRepository ;
-	@Override
-	public Utilisateur saveUtilisateur(Utilisateur utilisateur) {
-		// encrypter le mot de passe 
-		String hashPW=bCryptPasswordEncoder.encode(utilisateur.getPassword());
-		utilisateur.setPassword(hashPW);
-		// TODO Auto-generated method stub
-		return utilisateurRepository.save(utilisateur);
-	}
 
-	@Override
-	public Role saveRole(Role roles) {
-		// TODO Auto-generated method stub
-		return roleRepository.save(roles);
-	}
+    @Override
+    public Utilisateur saveUser(Utilisateur user) {
+        String hashPW=bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(hashPW);
+        return utilisateurRepository.save(user);
+    }
 
-	@Override
-	public void AjoutRoleAUtilisateur(String username, String roleName) {
-		// TODO Auto-generated method stub
-		Role role=roleRepository.findByRoleName(roleName);
-		Utilisateur utilisateur=utilisateurRepository.findByUsername(username);
-		utilisateur.getRoles().add(role);
-		
-		
-	}
+    @Override
+    public Utilisateur updateUser(Utilisateur user) {
+       String hashPW=bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(hashPW);
+        return utilisateurRepository.save(user);
+    }
 
-	@Override
-	public Utilisateur findUtilisateurByUsername(String username) {
-		// TODO Auto-generated method stub
-		return utilisateurRepository.findByUsername(username);
-	}
+    @Override
+    public List<Utilisateur> getAllUser() {
+        return utilisateurRepository.findAll();
+    }
+
+    @Override
+    public Utilisateur findUserByUsername(String Username) {
+        return utilisateurRepository.findByUsername(Username);
+    }
+
+    @Override
+    public Optional<Utilisateur> findUserById(Long UserID) {
+        return utilisateurRepository.findById(UserID);
+    }
+
+    @Override
+    public Optional<Utilisateur> getUser(Long UserId) {
+        return utilisateurRepository.findById(UserId);
+    }
+
+    @Override
+    public void deleteUser(Long UserId) {
+        utilisateurRepository.deleteById(UserId);
+    }
+
+    @Override
+    public Role saveRole(Role role) {
+        return roleRepository.save(role);
+    }
+
+    @Override
+    public Role updateRole(Role role) {
+        return roleRepository.saveAndFlush(role);
+    }
+
+    @Override
+    public List<Role> getAllRole() {
+        return roleRepository.findAll();
+    }
+
+    @Override
+    public Role getRole(Long RoleId) {
+        return roleRepository.getOne(RoleId);
+    }
+
+    @Override
+    public void deleteRole(Long RolerId) {
+        roleRepository.deleteById(RolerId);
+    }
+
+    @Override
+    public void AddRolesForUser(String username, String RoleName) {
+        Role role=roleRepository.findByRoleName(RoleName);
+    	Utilisateur user=utilisateurRepository.findByUsername(username);
+        user.getRoles().add(role);
+    }
+
 
 }

@@ -3,23 +3,14 @@ package banq.bmi.payload;
 import org.springframework.core.io.Resource;
 
 public class Response {
-    private long id;
+    private String id;
     private String fileName;
     private String fileDownloadUri;
     private String fileType;
     private long size;
 
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
+    public Response(String id, String fileName, String fileDownloadUri, String fileType, long size) {
         this.id = id;
-    }
-
-    public Response(long id, String fileName, String fileDownloadUri, String fileType, long size) {
-        this.id=id;
         this.fileName = fileName;
         this.fileDownloadUri = fileDownloadUri;
         this.fileType = fileType;
@@ -27,6 +18,13 @@ public class Response {
 
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getFileName() {
         return fileName;

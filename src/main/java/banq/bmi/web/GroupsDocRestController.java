@@ -11,37 +11,34 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController()
 @Service
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 public class GroupsDocRestController  {
     @Autowired
     private GrpsDoc grpsDoc ;
 
-    @GetMapping("/GroupesDoc")
+    @GetMapping("/Groupes")
     public List<GroupsDoc> ListGroupDoc(){
         return grpsDoc.findAll();
     }
 
-
-
-
-
-
-//    @DeleteMapping("/document/{id}")
-//    public Map<String, Boolean> deleteGroupDocument(@PathVariable(value = "id") Long documentId) throws Exception {
-//        GroupsDoc user =
-//                grpsDoc
-//                        .findById(documentId)
-//                        .orElseThrow(() -> new ResourceNotFoundException("Document not found on :: " + documentId));
-//        grpsDoc.delete(user);
-//        Map<String, Boolean> response = new HashMap<>();
-//        response.put("deleted", Boolean.TRUE);
-//        return response;
-//    }
+    @PostMapping("/Groupes")
+    public GroupsDoc createDocument(@RequestBody GroupsDoc user) {
+        return grpsDoc.save(user);
+    }
+    @PutMapping("/Groupes/{id}")
+    public GroupsDoc update(@PathVariable(value = "id") long id, @RequestBody GroupsDoc GROUPS) {
+         GroupsDoc gp = grpsDoc.findById(id).orElseThrow(() -> new ResourceNotFoundException("Document not found on :: " + id));
+         gp.setLibelle(GROUPS.getLibelle());
+         GroupsDoc updateGroups = grpsDoc.save(gp);
+        return updateGroups;
+    }
+    @DeleteMapping("/Groupes/{id}")
+    public void delete(@PathVariable(value = "id") Long id){
+        grpsDoc.deleteById(id);
+    }
 
 
 }

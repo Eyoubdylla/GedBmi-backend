@@ -24,7 +24,9 @@ public class Dossier implements Serializable {
 	private Long id;
 	private String nom ;
 	private Date dateCreation;
-	@ManyToOne(fetch = FetchType.EAGER)
+	private String Emplacement;
+	@ManyToOne()
+	@JoinColumn(name = "IdUser")
 	private Utilisateur utilisateur;
 	@OneToMany(mappedBy ="dossier",fetch=FetchType.LAZY )
 	private Collection<GroupsDoc> groupsDocs;

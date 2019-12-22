@@ -19,8 +19,33 @@ public class Role implements Serializable {
 	private Long id ;
 	private String roleName;
 	@ManyToMany
-	@JsonIgnore
-	private Collection<Utilisateur> utilisateurs;
+	private Collection<Utilisateur>  utilisateur;
+	public Role(String roleName, Collection<Utilisateur> utilisateur) {
+		this.roleName = roleName;
+		this.utilisateur = utilisateur;
+	}
 
-	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public Collection<Utilisateur> getUtilisateurs() {
+		return utilisateur;
+	}
+
+	public void setUtilisateurs(Collection<Utilisateur> utilisateurs) {
+		this.utilisateur = utilisateurs;
+	}
 }

@@ -20,7 +20,8 @@ public class GroupsDoc implements Serializable {
     @Column(name="id")
     private Long id;
     private String libelle;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
+    @JoinColumn(name = "IdDossier")
     private Dossier dossier;
     @OneToMany(mappedBy ="groupsDoc", fetch=FetchType.LAZY )
     @JsonIgnore

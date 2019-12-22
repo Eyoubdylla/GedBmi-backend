@@ -1,9 +1,12 @@
 package banq.bmi.web;
 
 import banq.bmi.Repository.UtilisateurRepository;
+import banq.bmi.entities.Role;
 import banq.bmi.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import banq.bmi.entities.Utilisateur;
@@ -11,50 +14,67 @@ import banq.bmi.services.AccountServive;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 
-@RestController
-@CrossOrigin
+@RestController()
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
+
 public class AccountRestController {
-	@Autowired
-	private AccountServive accountService ;
-	@Autowired
-	private UtilisateurRepository utilisateurRepository ;
+    @Autowired
+    private AccountServive accountService;
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	@RequestMapping("/login")
-	public Utilisateur user(Principal principal) {
-		//logger.info("user logged "+principal);
-		Utilisateur user = utilisateurRepository.findByUsername(principal.getName());
-		//user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-		return user;
-	}
+    @RequestMapping("/saveUser")
+    public Utilisateur saveUser(@RequestBody Utilisateur user) {
+        String hashPW = bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(hashPW);
+        return accountService.saveUser(user);
+    }
 
-	@GetMapping("/listUser")
-	public List<Utilisateur> ListDossier(){
-		return utilisateurRepository.findAll();
-	}
+    @RequestMapping("/login")
+    public Utilisateur user(Principal principal) {
 
+        //logger.info("user logged "+principal);
+        Utilisateur user = utilisateurRepository.findByUsername(principal.getName());
+        //user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        return user;
+    }
 
-	@PostMapping("/register")
+    @GetMapping("/listUser")
+    public List<Utilisateur> GetAllUser() {
+        return accountService.getAllUser();
+    }
 
-	public Utilisateur register(@RequestBody RegisterForm utilisateurForm) {
-		if(utilisateurForm.equals(utilisateurForm.getRepassword())) 
-			throw new RuntimeException("you must confirm your password");
-		Utilisateur usr=accountService.findUtilisateurByUsername(utilisateurForm.getUsername());
-		if(usr!=null)throw new RuntimeException("this user already exists");
-		Utilisateur utilsateur=new Utilisateur();
-		utilsateur.setUsername(utilisateurForm.getUsername());
-		utilsateur.setPassword(utilisateurForm.getPassword());
-		accountService.saveUtilisateur(utilsateur);
-		accountService.AjoutRoleAUtilisateur(utilisateurForm.getUsername(), "GETIONNAIRE");
-		return utilsateur;
-	}
+    @PostMapping("/register")
 
-@PutMapping("/listUser/update/{id}")
-    public Utilisateur updateUser(@PathVariable(value = "Id") long Id , @Valid @RequestBody Utilisateur userdetail){
-        Utilisateur user = utilisateurRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Uitisateur","Id", Id));
+    public Utilisateur register(@RequestBody RegisterForm UserForm) {
+        if (!UserForm.getPassword().equals(UserForm.getRepassword()))
+            throw new RuntimeException("you must confirm your password");
+        Utilisateur usr = accountService.findUserByUsername(UserForm.getUsername());
+        if (usr != null) throw new RuntimeException("this user already exists");
+        Utilisateur utilsateur = new Utilisateur();
+        utilsateur.setUsername(UserForm.getUsername());
+        utilsateur.setPassword(UserForm.getPassword());
+        utilsateur.setEmail(UserForm.getEmail());
+        System.out.println("username" + utilsateur.getUsername() + "" + utilsateur.getEmail());
+        accountService.saveUser(utilsateur);
+        accountService.AddRolesForUser(UserForm.getUsername(), "GETIONNAIRE");
+        return utilsateur;
+    }
+
+    @PutMapping("/listUser/{id}")
+    public Utilisateur updateUser(@PathVariable long id, @RequestBody Utilisateur userdetail) {
+        System.out.println("user " + userdetail.getRoles());
+        Utilisateur user = utilisateurRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Uitisateur", "Id", id));
         user.setUsername(userdetail.getUsername());
         user.setPassword(userdetail.getPassword());
+        user.setEmail(userdetail.getEmail());
+        Collection<Role> roles = userdetail.getRoles();
+
         user.setRoles(userdetail.getRoles());
         Utilisateur updateUser = utilisateurRepository.save(user);
         System.out.println("********************");
@@ -63,10 +83,11 @@ public class AccountRestController {
         System.out.println(user.getRoles());
         return updateUser;
     }
-    @DeleteMapping ("/listUser/{id}")
+
+    @DeleteMapping("/listUser/{id}")
     //@RequestMapping(value ="/listUser/{id}",method = RequestMethod.DELETE.GET)
-    public ResponseEntity<?> delete(@PathVariable(value = "id") long Id){
-        Utilisateur user = utilisateurRepository.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Uitisateur","Id", Id));
+    public ResponseEntity<?> delete(@PathVariable(value = "id") long Id) {
+        Utilisateur user = accountService.findUserById(Id).orElseThrow(() -> new ResourceNotFoundException("Uitisateur", "Id", Id));
         utilisateurRepository.delete(user);
         return ResponseEntity.ok().build();
     }

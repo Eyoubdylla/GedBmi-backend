@@ -2,7 +2,10 @@ package banq.bmi.web;
 
 
 import banq.bmi.Repository.DocumentRepositry;
+import banq.bmi.Repository.UtilisateurRepository;
 import banq.bmi.entities.Document;
+import banq.bmi.entities.Role;
+import banq.bmi.entities.Utilisateur;
 import banq.bmi.payload.Response;
 import banq.bmi.services.DocumentService;
 import org.slf4j.Logger;
@@ -20,37 +23,57 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController()
 @CrossOrigin(origins = "http://localhost:4200")
 public class DocumentRestController {
     @Autowired
-    private DocumentRepositry documentRepositry ;
-    private static final Logger logger = LoggerFactory.getLogger(DocumentRestController.class);
-
-    @GetMapping("/document")
-    public List<Document> ListDocuments(){
-        return documentRepositry.findAll();
-    }
-
+    private DocumentRepositry documentRepositry;
     @Autowired
     private DocumentService documentService;
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
+    private static final Logger logger = LoggerFactory.getLogger(DocumentRestController.class);
+
+    @GetMapping("/document/{idUser}")
+    public Collection<Document> ListDocuments(@PathVariable Long idUser, @RequestParam String idGroup) {
+          Utilisateur user = utilisateurRepository.getOne(idUser);
+        Collection<Role> roles=  user.getRoles();
+
+        for (Role role:roles) {
+
+            if(role.getRoleName().equals("EMPLOYER")){
+                if (idGroup.equals("null")){
+                    return documentRepositry.documentByUser(idUser);
+                }else{
+                    return documentRepositry.documentByUserByGroup(idUser, Long.parseLong(idGroup));
+                }
+
+            }
+        }
+        if (idGroup.equals("null")){
+            return documentRepositry.findAll();
+        }else{
+            return documentRepositry.documentByGroup(Long.parseLong(idGroup));
+        }
+
+    }
+
+    @GetMapping("/document/byGroup/{id}")
+    public Collection<Document> ListDocumentsByGroupe(@PathVariable Long id) {
+        return documentRepositry.documentByGroupe(id);
+    }
 
     @PostMapping("/uploadFile")
-    public Response uploadFile(@RequestParam("file") MultipartFile file) {
-       Document document = documentService.storeFile(file);
-
-
-
+    public Response uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("idUser") Long idUser ) {
+        Document document = documentService.storeFile(file, utilisateurRepository.getOne(idUser) );
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadFile/")
                 .path(document.getId())
                 .toUriString();
-        return new Response(document.getId(),document.getFileName(), fileDownloadUri,
-                file.getContentType(), file.getSize()) ;
+        return new Response(document.getId(), document.getFileName(), fileDownloadUri,
+                file.getContentType(), file.getSize());
     }
 
 //    @PostMapping("/uploadMultipleFiles")
@@ -73,20 +96,19 @@ public class DocumentRestController {
     }
 
 
-
-
-    @PutMapping("/document/{id}")
+    @PatchMapping("/document/{id}")
     public ResponseEntity<Document> updateDocument(
             @PathVariable(value = "id") String IdDoc, @Valid @RequestBody Document documentDetails)
             throws ResourceNotFoundException {
-        Document document =
+        documentDetails.setLastModifiedDate(new Date());
+        /*Document document =
                 documentRepositry
                         .findById(IdDoc)
                         .orElseThrow(() -> new ResourceNotFoundException("Document not found on :: " + IdDoc));
 
         document.setFileName(documentDetails.getFileName());
-        document.setGroupsDoc(documentDetails.getGroupsDoc());
-        final Document updateDocument = documentRepositry.save(document);
+        document.setGroupsDoc(documentDetails.getGroupsDoc());*/
+        final Document updateDocument = documentRepositry.save(documentDetails);
         return ResponseEntity.ok(updateDocument);
     }
 
@@ -111,10 +133,6 @@ public class DocumentRestController {
     }
 
 
-
-
-
-
     /**
      * Gets Document by id.
      *
@@ -135,13 +153,25 @@ public class DocumentRestController {
     /**
      * Create Document Document.
      *
-     * @param user the user
+     * @param
      * @return the user
      */
 //    @PostMapping("/document")
 //    public Document createDocument(@Valid @RequestBody Document user) {
 //        return documentRepositry.save(user);
 //    }
+    @GetMapping("/document/valider/{id}")
+    public Document validerDocument(@PathVariable String id) {
+        Document doc = documentRepositry.getOne(id);
+        doc.setStatus("Valider");
+        return documentRepositry.save(doc);
+    }
+    @GetMapping("/document/annuller/{id}")
+    public Document AnnullerDocument(@PathVariable String id) {
+        Document doc = documentRepositry.getOne(id);
+        doc.setStatus("Annuller");
+        return documentRepositry.save(doc);
+    }
 
 
 }

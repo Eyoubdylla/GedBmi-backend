@@ -1,6 +1,8 @@
 package banq.bmi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +31,9 @@ public class Utilisateur implements Serializable {
 	@OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private Collection<Dossier> dossiers;
+	@OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Collection<Document> documents;
 
 	public Utilisateur() {
 	}

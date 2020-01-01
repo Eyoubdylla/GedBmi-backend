@@ -1,5 +1,6 @@
 package banq.bmi.web;
 
+import banq.bmi.Repository.RoleRepository;
 import banq.bmi.Repository.UtilisateurRepository;
 import banq.bmi.entities.Role;
 import banq.bmi.exception.ResourceNotFoundException;
@@ -25,6 +26,9 @@ public class AccountRestController {
     private AccountServive accountService;
     @Autowired
     private UtilisateurRepository utilisateurRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -51,19 +55,15 @@ public class AccountRestController {
 
     @PostMapping("/register")
 
-    public Utilisateur register(@RequestBody RegisterForm UserForm) {
-        if (!UserForm.getPassword().equals(UserForm.getRepassword()))
-            throw new RuntimeException("you must confirm your password");
+    public Utilisateur register(@RequestBody Utilisateur UserForm) {
+        /*if (!UserForm.getPassword().equals(UserForm.getRepassword()))
+            throw new RuntimeException("you must confirm your password");*/
         Utilisateur usr = accountService.findUserByUsername(UserForm.getUsername());
         if (usr != null) throw new RuntimeException("this user already exists");
-        Utilisateur utilsateur = new Utilisateur();
-        utilsateur.setUsername(UserForm.getUsername());
-        utilsateur.setPassword(UserForm.getPassword());
-        utilsateur.setEmail(UserForm.getEmail());
-        System.out.println("username" + utilsateur.getUsername() + "" + utilsateur.getEmail());
-        accountService.saveUser(utilsateur);
-        accountService.AddRolesForUser(UserForm.getUsername(), "GETIONNAIRE");
-        return utilsateur;
+
+        Utilisateur user= accountService.saveUser(UserForm);
+        //accountService.AddRolesForUser(UserForm.getUsername(), "GETIONNAIRE");
+        return user;
     }
 
     @PutMapping("/listUser/{id}")
@@ -86,10 +86,13 @@ public class AccountRestController {
 
     @DeleteMapping("/listUser/{id}")
     //@RequestMapping(value ="/listUser/{id}",method = RequestMethod.DELETE.GET)
-    public ResponseEntity<?> delete(@PathVariable(value = "id") long Id) {
-        Utilisateur user = accountService.findUserById(Id).orElseThrow(() -> new ResourceNotFoundException("Uitisateur", "Id", Id));
-        utilisateurRepository.delete(user);
-        return ResponseEntity.ok().build();
+    public void delete(@PathVariable(value = "id") long Id) {
+        Utilisateur user = utilisateurRepository.getOne(Id);
+        for (Role role: user.getRoles()){
+            role.setUtilisateur(null);
+            role.setUtilisateurs(null);
+            roleRepository.save(role);
+        }
+                utilisateurRepository.deleteById(Id);
     }
-
 }

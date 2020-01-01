@@ -1,6 +1,7 @@
 package banq.bmi.entities;
 
 import banq.bmi.Repository.UtilisateurRepository;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class Dossier implements Serializable {
 	@JoinColumn(name = "IdUser")
 	private Utilisateur utilisateur;
 	@OneToMany(mappedBy ="dossier",fetch=FetchType.LAZY )
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Collection<GroupsDoc> groupsDocs;
 
 

@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import banq.bmi.services.AccountServive;
 
 @SpringBootApplication
-public class GedBmiApplication implements CommandLineRunner{
+public class GedBmiApplication{
 	@Autowired
 	private DossierRepository dossierRepository;
 	@Autowired
@@ -45,7 +45,7 @@ public class GedBmiApplication implements CommandLineRunner{
 	public BCryptPasswordEncoder getBCPE() {
 		return new BCryptPasswordEncoder();
 	}
-	@Override
+	/*@Override
 	public void run(String... args) throws Exception {
 		// TODO Auto-generated method stubts
 
@@ -91,5 +91,5 @@ public class GedBmiApplication implements CommandLineRunner{
 
 
 
-	}
+	}*/
 }

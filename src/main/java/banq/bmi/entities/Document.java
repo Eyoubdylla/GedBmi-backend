@@ -26,6 +26,9 @@ public class Document implements Serializable {
 	private  Long size;
 	private Date lastModifiedDate ;
 	private String Status ;
+	@ManyToOne
+	@JoinColumn(name = "IdUser")
+	private Utilisateur utilisateur;
 	@Lob
 	private byte[] data;
     @ManyToOne()
@@ -40,7 +43,6 @@ public class Document implements Serializable {
 		this.data=bytes;
 		this.size = size;
 	}
-
 
 	public String getId() {
 		return id;

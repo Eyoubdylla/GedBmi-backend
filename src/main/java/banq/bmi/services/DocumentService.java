@@ -2,6 +2,7 @@ package banq.bmi.services;
 
 import banq.bmi.Repository.DocumentRepositry;
 import banq.bmi.entities.Document;
+import banq.bmi.entities.Utilisateur;
 import banq.bmi.exception.FileNotFoundException;
 import banq.bmi.exception.FileStorageException;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class DocumentService {
     @Autowired
     private DocumentRepositry documentRepositry;
 
-    public Document storeFile(MultipartFile file){
+    public Document storeFile(MultipartFile file, Utilisateur user){
 
         String  fileName= StringUtils.cleanPath(file.getOriginalFilename());
         try{
@@ -36,6 +37,7 @@ public class DocumentService {
             bdDocument = new Document(fileName,file.getContentType(),
                     file.getBytes(), file.getSize());
             bdDocument.setStatus("Current");
+            bdDocument.setUtilisateur(user);
 //            bdDocument.setDateCration(doc.getDateCration());
 //            bdDocument.setGroupsDoc(doc.getGroupsDoc());
 

@@ -51,8 +51,8 @@ public class AccountServiveImpl implements AccountServive{
     }
 
     @Override
-    public Optional<Utilisateur> findUserById(Long UserID) {
-        return utilisateurRepository.findById(UserID);
+    public Utilisateur findUserById(Long UserID) {
+        return utilisateurRepository.getOne(UserID);
     }
 
     @Override

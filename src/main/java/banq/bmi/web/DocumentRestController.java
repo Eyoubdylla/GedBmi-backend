@@ -2,6 +2,7 @@ package banq.bmi.web;
 
 
 import banq.bmi.Repository.DocumentRepositry;
+import banq.bmi.Repository.RoleRepository;
 import banq.bmi.Repository.UtilisateurRepository;
 import banq.bmi.entities.Document;
 import banq.bmi.entities.Role;
@@ -34,6 +35,8 @@ public class DocumentRestController {
     private DocumentService documentService;
     @Autowired
     private UtilisateurRepository utilisateurRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     private static final Logger logger = LoggerFactory.getLogger(DocumentRestController.class);
 
     @GetMapping("/document/{idUser}")
@@ -42,14 +45,12 @@ public class DocumentRestController {
         Collection<Role> roles=  user.getRoles();
 
         for (Role role:roles) {
-
             if(role.getRoleName().equals("EMPLOYER")){
                 if (idGroup.equals("null")){
                     return documentRepositry.documentByUser(idUser);
                 }else{
                     return documentRepositry.documentByUserByGroup(idUser, Long.parseLong(idGroup));
                 }
-
             }
         }
         if (idGroup.equals("null")){
@@ -171,6 +172,22 @@ public class DocumentRestController {
         Document doc = documentRepositry.getOne(id);
         doc.setStatus("Annuller");
         return documentRepositry.save(doc);
+    }
+
+
+    @GetMapping("/document/supprimer/{id}/{roleId}")
+    public Document supprimerDocument(@PathVariable String id, @PathVariable Long roleId) {
+
+        Role role =  roleRepository.getOne(roleId);
+        if(role.getRoleName().equals("EMPLOYER")){
+            Document doc = documentRepositry.getOne(id);
+            doc.setStatus("en_cour_Suppression");
+            return documentRepositry.save(doc);
+        }else
+        {
+            documentRepositry.deleteById(id);
+            return  new Document();
+        }
     }
 
 

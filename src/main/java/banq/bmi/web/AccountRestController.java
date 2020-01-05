@@ -1,7 +1,9 @@
 package banq.bmi.web;
 
+import banq.bmi.Repository.DocumentRepositry;
 import banq.bmi.Repository.RoleRepository;
 import banq.bmi.Repository.UtilisateurRepository;
+import banq.bmi.entities.Document;
 import banq.bmi.entities.Role;
 import banq.bmi.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ public class AccountRestController {
 
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private DocumentRepositry documentRepositry;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -65,6 +69,15 @@ public class AccountRestController {
         //accountService.AddRolesForUser(UserForm.getUsername(), "GETIONNAIRE");
         return user;
     }
+    @PostMapping("/updatePass/{idUser}")
+
+    public Utilisateur changePassword(@PathVariable Long idUser, @RequestBody Utilisateur UserForm) {
+
+        Utilisateur user = accountService.findUserById(idUser);
+        user.setPassword(UserForm.getPassword());
+        user.setConnected(true);
+        return accountService.saveUser(user);
+    }
 
     @PutMapping("/listUser/{id}")
     public Utilisateur updateUser(@PathVariable long id, @RequestBody Utilisateur userdetail) {
@@ -93,6 +106,12 @@ public class AccountRestController {
             role.setUtilisateurs(null);
             roleRepository.save(role);
         }
-                utilisateurRepository.deleteById(Id);
+
+
+        for (Document document: user.getDocuments()){
+            document.setUtilisateur(null);
+            documentRepositry.save(document);
+        }
+        utilisateurRepository.deleteById(Id);
     }
 }

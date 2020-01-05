@@ -15,7 +15,7 @@ public interface AccountServive {
 
     public Utilisateur findUserByUsername(String Username);
 
-    public Optional<Utilisateur> findUserById(Long UserID);
+    public Utilisateur findUserById(Long UserID);
 
     public Optional<Utilisateur> getUser(Long UserId);
 

@@ -19,9 +19,9 @@ public interface DocumentRepositry extends JpaRepository<Document, String> {
 //    public Document findByUsername(String username);
 @Query("select d from Document d where d.groupsDoc.id = :x")
 public Collection<Document> documentByGroupe(@Param("x") Long id);
-    @Query("select d from Document d where d.utilisateur.id = :x order by d.id desc")
+    @Query("select d from Document d where d.utilisateur.id = :x and status<>'en_cour_Suppression' order by d.id desc")
     public List<Document> documentByUser(@Param("x") Long id);
-    @Query("select d from Document d where d.utilisateur.id = :x and d.groupsDoc.id= :y order by d.id desc")
+    @Query("select d from Document d where d.utilisateur.id = :x and d.groupsDoc.id= :y and status<>'en_cour_Suppression' order by d.id desc")
     public List<Document> documentByUserByGroup(@Param("x") Long id, @Param("y") Long idGroup);
     @Query("select d from Document d where d.groupsDoc.id= :y order by d.id desc")
     public List<Document> documentByGroup(@Param("y") Long idGroup);

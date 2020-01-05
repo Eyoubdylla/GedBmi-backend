@@ -8,18 +8,16 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Collection;
 
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class Boxe {
-    @Id
-    @GeneratedValue
-    private  Long id ;
-
+public class Departement {
+    @Id @GeneratedValue
+    private  Long id;
+    private Long latitude;
+    private Long longitude;
     @OneToMany(mappedBy = "departement", fetch = FetchType.LAZY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Collection<Dossier> dossiers;
-
-
 }

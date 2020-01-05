@@ -25,10 +25,22 @@ public class Dossier implements Serializable {
 	private Long id;
 	private String nom ;
 	private Date dateCreation;
-	private String Emplacement;
+	private String Type;
+    @ManyToOne()
+    @JoinColumn(name = "IdBoxe")
+	private Boxe boxe;
+    @ManyToOne()
+    @JoinColumn(name = "IdCasier")
+	private Casier casier;
+    @ManyToOne()
+    @JoinColumn(name = "IdArchive")
+	private Archive archive;
 	@ManyToOne()
 	@JoinColumn(name = "IdUser")
 	private Utilisateur utilisateur;
+	@ManyToOne()
+    @JoinColumn(name = "IdDepartement")
+    private Departement departement;
 	@OneToMany(mappedBy ="dossier",fetch=FetchType.LAZY )
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Collection<GroupsDoc> groupsDocs;

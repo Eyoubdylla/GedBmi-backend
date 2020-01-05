@@ -25,13 +25,23 @@ public class Utilisateur implements Serializable {
 	private String username ;
 	private String Password ;
 	private String email ;
+	private  boolean isConnected= false;
 	// pour que chaque fois que je charge un utilisateur il avoir ses roles
 	@ManyToMany(fetch=FetchType.EAGER)
 	private Collection<Role> roles = new ArrayList<>();
 	@OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
 	@JsonIgnore
 	private Collection<Dossier> dossiers;
-	@OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+
+    public Collection<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Collection<Document> documents) {
+        this.documents = documents;
+    }
+
+    @OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Collection<Document> documents;
 
@@ -84,6 +94,14 @@ public class Utilisateur implements Serializable {
 
 	public void setRoles(Collection<Role> roles) {
 		this.roles = roles;
+	}
+
+	public boolean isConnected() {
+		return isConnected;
+	}
+
+	public void setConnected(boolean connected) {
+		isConnected = connected;
 	}
 
 	public Utilisateur(String username, String password, String email, Collection<Role> roles) {
